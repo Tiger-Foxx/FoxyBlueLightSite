@@ -1,407 +1,501 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FoxyBlueLight - Advanced Blue Light Filter for Windows</title>
+    <title>FoxyBlueLight - Filtre Ultime de Lumière Bleue pour Windows</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-    <link rel="icon" href="favicon.ico" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="https://github.com/Tiger-Foxx/BlueLightFox/raw/main/FoxyBlueLight/Resources/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --primary-orange: #ff5722; /* Orange vif et énergique */
+            --secondary-orange: #ff9800;
+            --dark-bg: #0D0D0D; /* Noir profond, légèrement texturé */
+            --medium-bg: #1A1A1A;
+            --light-bg: #2C2C2C;
+            --text-light: #f0f0f0;
+            --text-medium: #a0a0a0;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            color: #e5e5e5;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
             scroll-behavior: smooth;
+            overflow-x: hidden; /* Empêcher le scroll horizontal */
         }
 
-        .gradient-text {
-            background: linear-gradient(90deg, #f97316, #f59e0b);
+        .gradient-text-animated {
+            background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange), var(--primary-orange));
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            animation: gradient-animation 5s ease infinite;
         }
 
-        .glow-orange {
-            box-shadow: 0 0 15px rgba(249, 115, 22, 0.5);
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.2);
+        .neon-glow-orange-soft {
+            box-shadow: 0 0 8px rgba(255, 87, 34, 0.6), 0 0 15px rgba(255, 87, 34, 0.4);
         }
 
-        .before-after {
+        .feature-card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        /* Removed hover effect from here, will be controlled by JS for tilt */
+
+        .download-btn-main {
             position: relative;
             overflow: hidden;
-            border-radius: 0.5rem;
+            z-index: 1;
+            transition: color 0.4s ease-in-out, transform 0.3s ease;
         }
-
-        .before-after::before {
-            content: 'Before';
+        .download-btn-main::before {
+            content: '';
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--secondary-orange), var(--primary-orange));
+            z-index: -1;
+            transition: transform 0.4s ease-in-out;
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+        .download-btn-main:hover::before {
+            transform: scaleX(1);
+        }
+        .download-btn-main:hover {
+            color: var(--dark-bg) !important; /* Ensure text color changes */
+            transform: scale(1.05);
+        }
+        .download-btn-main i {
+            transition: transform 0.3s ease;
+        }
+        .download-btn-main:hover i {
+            transform: translateX(5px);
         }
 
-        .before-after::after {
-            content: 'After';
+        .nav-link-effect {
+            position: relative;
+            padding-bottom: 8px;
+        }
+        .nav-link-effect::after {
+            content: '';
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+            border-radius: 2px;
+            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .nav-link-effect:hover::after, .nav-link-effect.active::after {
+            width: 70%;
         }
 
-        .slider-handle {
-            width: 40px;
-            height: 40px;
-            background-color: #f97316;
+        .section-title {
+            font-size: 2.8rem; /* ~45px */
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-orange), var(--secondary-orange));
+            bottom: -10px;
+            left: 20%;
+            border-radius: 2px;
+        }
+        @media (min-width: 768px) {
+            .section-title {
+                font-size: 3.5rem; /* ~56px */
+            }
+        }
+
+        .glassmorphism {
+            background: rgba(26, 26, 26, 0.6); /* var(--medium-bg) with alpha */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-dashboard-img {
+            width: 500px;
+            max-width: 40vw;
+            height: auto;
+            border-radius: 1rem;
+            object-fit: contain;
+            box-shadow: 0 0 25px rgba(255, 87, 34, 0.4), 0 0 50px rgba(255, 87, 34, 0.2);
+            transform: perspective(1000px) rotateY(-5deg) rotateX(2deg) scale(1.05);
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .hero-dashboard-img:hover {
+            transform: perspective(1200px) rotateY(0deg) rotateX(0deg) scale(1.1);
+        }
+
+        .comparison-slider {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            border: 2px solid var(--primary-orange);
+            box-shadow: 0 0 30px rgba(255, 87, 34, 0.3);
+        }
+        .comparison-slider .img-after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            object-fit: cover;
+            overflow: hidden;
+        }
+        .comparison-slider .img-after img {
+            width: 100vw;
+            max-width: none;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(0.3) saturate(1.1) hue-rotate(-5deg);
+        }
+        .comparison-slider .img-before img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .comparison-slider .slider-line {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-orange);
+            cursor: ew-resize;
+            transform: translateX(-50%);
+            z-index: 10; /* Ensure line is above images */
+        }
+        .comparison-slider .slider-handle {
+            position: absolute;
+            top: 50%;
+            /* left: 50%; will be set by JS */
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-orange);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: ew-resize;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            color: white;
+            z-index: 20; /* Ensure handle is above line */
         }
+        .comparison-slider .slider-handle i { font-size: 1.5rem; }
 
-        .download-btn {
-            position: relative;
-            overflow: hidden;
+        .bg-pattern {
+            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 20px 20px;
         }
-
-        .download-btn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -60%;
-            width: 200%;
-            height: 200%;
-            background: rgba(255,255,255,0.1);
-            transform: rotate(30deg);
-            transition: all 0.3s;
-        }
-
-        .download-btn:hover::after {
-            left: 100%;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .floating {
-            animation: float 4s ease-in-out infinite;
-        }
-
-        .nav-link {
-            position: relative;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #f97316;
-            transition: width 0.3s;
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
+        .contact-card-link:hover { /* specific hover for contact cards if needed beyond JS tilt */
+            background-color: rgba(255, 87, 34, 0.1);
+            box-shadow: 0 0 20px rgba(255, 87, 34, 0.3), 0 5px 10px rgba(0,0,0,0.2);
+            transform: translateY(-8px) /* Combined with JS tilt, manage carefully or disable one */;
         }
     </style>
 </head>
-<body>
-<!-- Navigation -->
-<nav class="bg-black/80 backdrop-blur-md fixed w-full z-50 border-b border-gray-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
+<body class="bg-pattern">
+
+<!-- Navigation Améliorée -->
+<nav class="fixed w-full z-50 top-0 glassmorphism border-b border-gray-700/50 shadow-lg">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
             <div class="flex items-center">
-                <div class="flex-shrink-0 flex items-center">
-                    <img src="https://github.com/Tiger-Foxx/BlueLightFox/raw/main/FoxyBlueLight/Resources/logo.png" alt="FoxyBlueLight Logo" class="h-8 w-auto">
-                    <span class="ml-2 text-white font-bold text-xl">Foxy<span class="gradient-text">BlueLight</span></span>
-                </div>
+                <a href="#" class="flex-shrink-0 flex items-center">
+                    <img src="https://github.com/Tiger-Foxx/BlueLightFox/raw/main/FoxyBlueLight/Resources/logo.png" alt="Logo FoxyBlueLight" class="h-10 w-auto transition-transform duration-300 hover:scale-110">
+                </a>
             </div>
             <div class="hidden md:block">
-                <div class="ml-10 flex items-baseline space-x-8">
-                    <a href="#features" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Features</a>
-                    <a href="#benefits" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Benefits</a>
-                    <a href="#about" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">About</a>
-                    <a href="#contact" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Contact</a>
+                <div class="ml-10 flex items-baseline space-x-6 lg:space-x-8">
+                    <a href="#fonctionnalites" class="nav-link-effect text-gray-300 hover:text-white px-3 py-2 text-sm font-semibold uppercase tracking-wider">Fonctionnalités</a>
+                    <a href="#benefices" class="nav-link-effect text-gray-300 hover:text-white px-3 py-2 text-sm font-semibold uppercase tracking-wider">Bénéfices</a>
+                    <a href="#a-propos" class="nav-link-effect text-gray-300 hover:text-white px-3 py-2 text-sm font-semibold uppercase tracking-wider">À Propos</a>
+                    <a href="#contact" class="nav-link-effect text-gray-300 hover:text-white px-3 py-2 text-sm font-semibold uppercase tracking-wider">Contact</a>
                 </div>
             </div>
             <div class="md:block">
-                <a href="https://github.com/Tiger-Foxx/BlueLightFox/releases/download/health/Foxy_Light_Setup.exe" class="download-btn ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition-colors">
-                    Download Now
-                    <svg class="ml-2 -mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                    </svg>
+                <a href="https://github.com/Tiger-Foxx/BlueLightFox/releases/download/health/Foxy_Light_Setup.exe" 
+                   class="download-btn-main ml-4 inline-flex items-center px-6 py-3 border-2 border-orange-500 text-sm font-bold rounded-lg text-orange-400 transition-all duration-300">
+                    TÉLÉCHARGER
+                    <i class="fas fa-download ml-2"></i>
                 </a>
             </div>
+            <div class="-mr-2 flex md:hidden">
+                <button id="mobile-menu-button" type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                    <span class="sr-only">Ouvrir le menu principal</span>
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Menu Mobile -->
+    <div class="md:hidden hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 glassmorphism border-t border-gray-700/30">
+            <a href="#fonctionnalites" class="text-gray-300 hover:bg-gray-700/50 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Fonctionnalités</a>
+            <a href="#benefices" class="text-gray-300 hover:bg-gray-700/50 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Bénéfices</a>
+            <a href="#a-propos" class="text-gray-300 hover:bg-gray-700/50 hover:text-white block px-3 py-2 rounded-md text-base font-medium">À Propos</a>
+            <a href="#contact" class="text-gray-300 hover:bg-gray-700/50 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact</a>
         </div>
     </div>
 </nav>
 
-<!-- Hero Section -->
-<section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900">
-    <div class="max-w-7xl mx-auto">
-        <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
-            <div class="mb-12 lg:mb-0">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                    Protect Your Eyes with <br>
-                    <span class="gradient-text">FoxyBlueLight</span>
+<!-- Hero Section Explosif -->
+<section class="pt-32 pb-24 md:pt-40 md:pb-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden min-h-screen flex items-center" style="background: radial-gradient(ellipse at bottom, var(--medium-bg) 0%, var(--dark-bg) 70%);">
+    <div class="absolute inset-0 opacity-10">
+    </div>
+    <div class="max-w-screen-xl mx-auto z-10">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-12 items-center">
+            <div class="lg:col-span-7 mb-12 lg:mb-0 text-center lg:text-left reveal">
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6">
+                    Protégez Vos Yeux Avec<br>
+                    <span class="gradient-text-animated">FoxyBlueLight</span>
                 </h1>
-                <p class="text-lg text-gray-300 mb-8 max-w-lg">
-                    The most advanced blue light filter for Windows. Reduce eye strain, improve sleep quality, and enhance your digital experience with our scientifically-designed protection.
+                <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-xl mx-auto lg:mx-0">
+                    Le filtre de lumière bleue nouvelle génération pour Windows. Réduisez la fatigue oculaire, améliorez votre sommeil et boostez votre bien-être numérique avec notre technologie de pointe.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="https://github.com/Tiger-Foxx/BlueLightFox/releases/download/health/Foxy_Light_Setup.exe" class="download-btn inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 md:py-4 md:text-lg md:px-10 transition-all duration-300">
-                        Download Free
-                        <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="https://github.com/Tiger-Foxx/BlueLightFox/releases/download/health/Foxy_Light_Setup.exe" 
+                       class="download-btn-main inline-flex items-center justify-center px-10 py-4 border-2 border-orange-500 text-base font-bold rounded-xl text-orange-400 md:text-lg">
+                        TÉLÉCHARGEMENT GRATUIT
+                        <i class="fas fa-shield-alt ml-3"></i>
                     </a>
-                    <a href="#features" class="inline-flex items-center justify-center px-8 py-3 border border-gray-700 text-base font-medium rounded-md text-white bg-gray-800 hover:bg-gray-700 md:py-4 md:text-lg md:px-10 transition-colors">
-                        Learn More
-                        <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                        </svg>
+                    <a href="#fonctionnalites" 
+                       class="inline-flex items-center justify-center px-10 py-4 border-2 border-gray-600 text-base font-bold rounded-xl text-gray-300 bg-gray-800/50 hover:bg-gray-700/70 hover:border-orange-500 transition-all duration-300 md:text-lg">
+                        Découvrir Plus
+                        <i class="fas fa-arrow-down ml-3"></i>
                     </a>
                 </div>
-                <div class="mt-8 flex items-center">
-                    <div class="flex -space-x-2">
-                        <img class="inline-block h-10 w-10 rounded-full ring-2 ring-gray-800" src="https://avatars.githubusercontent.com/u/118616410?v=4" alt="Fox avatar">
-                    </div>
+                <div class="mt-12 flex items-center justify-center lg:justify-start">
+                    <img class="inline-block h-12 w-12 rounded-full ring-2 ring-orange-500/70" src="https://avatars.githubusercontent.com/u/118616410?v=4" alt="Avatar Fox">
                     <div class="ml-4">
-                        <p class="text-sm text-gray-400">Created by</p>
-                        <p class="text-sm font-medium text-orange-400">Fox</p>
+                        <p class="text-sm text-gray-400">Une création de</p>
+                        <p class="text-md font-semibold text-orange-400">Fox</p>
                     </div>
                 </div>
             </div>
-            <div class="relative floating" style="display: flex ; align-items: center;justify-content: center">
-                <div class="relative glow-orange rounded-xl overflow-hidden ng w-200" style="width: 300px">
-                    <img  width="300px" src="https://github.com/Tiger-Foxx/BlueLightFox/raw/main/FoxyBlueLight/screenShots/capture2.png?raw=true" alt="FoxyBlueLight Screenshot" class="w-100 h-auto rounded-xl">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                </div>
-                <div class="absolute -bottom-5 -right-5">
-                    <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_obhph3sh.json" background="transparent" speed="1" style="width: 150px; height: 150px;" loop autoplay></lottie-player>
+            <div class="lg:col-span-5 relative flex justify-center items-center reveal" style="animation-delay: 0.2s;">
+                <img src="illustration.png" 
+                     alt="Dashboard FoxyBlueLight" 
+                     class="hero-dashboard-img">
+                <div class="absolute -bottom-10 -right-10 md:-bottom-16 md:-right-16 opacity-70">
+                    <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_obhph3sh.json" background="transparent" speed="0.8" style="width: 380px; height: 380px; md:width: 350px; md:height: 350px;" loop autoplay></lottie-player>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Before/After Comparison -->
-<section class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900">
-    <div class="max-w-4xl mx-auto text-center mb-12">
-        <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
-            See the <span class="gradient-text">Difference</span>
+<!-- Comparaison Avant/Après Stylisée -->
+<section class="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-var(--dark-bg) to-var(--medium-bg)">
+    <div class="max-w-4xl mx-auto text-center mb-16 reveal">
+        <h2 class="section-title text-white">
+            Voyez la <span class="gradient-text-animated">Différence</span>
         </h2>
-        <p class="mt-3 text-xl text-gray-300">
-            FoxyBlueLight intelligently filters harmful blue light while maintaining color accuracy
+        <p class="mt-8 text-xl text-gray-300 max-w-2xl mx-auto">
+            FoxyBlueLight filtre intelligemment la lumière bleue néfaste tout en préservant une excellente fidélité des couleurs pour votre confort visuel.
         </p>
     </div>
-    <div class="max-w-5xl mx-auto">
-        <div class="before-after relative">
-            <div class="relative w-full h-96 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" alt="Before FoxyBlueLight" class="absolute inset-0 w-full h-full object-cover">
-                <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" alt="After FoxyBlueLight" class="absolute inset-0 w-full h-full object-cover" style="filter: sepia(0.4) saturate(1.2) hue-rotate(-10deg);">
-                <div class="absolute inset-y-0 left-1/2 w-1 bg-orange-500/50"></div>
-                <div class="slider-handle absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
-                    </svg>
+    <div class="max-w-5xl mx-auto reveal" style="animation-delay: 0.2s;">
+        <div class="comparison-slider h-72 md:h-96 lg:h-[500px]">
+            <div class="img-before">
+                <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" alt="Avant FoxyBlueLight">
+            </div>
+            <div class="img-after">
+                <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" alt="Après FoxyBlueLight">
+            </div>
+            <div class="slider-line">
+                <div class="slider-handle">
+                    <i class="fas fa-arrows-alt-h"></i>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Features Section -->
-<section id="features" class="py-20 px-4 sm:px-6 lg:px-8 bg-black">
-    <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-            <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
-                Powerful <span class="gradient-text">Features</span>
+<!-- Section Fonctionnalités Statique -->
+<section id="fonctionnalites" class="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-var(--medium-bg)">
+    <div class="max-w-screen-xl mx-auto">
+        <div class="text-center mb-20 reveal">
+            <h2 class="section-title text-white">
+                Fonctionnalités <span class="gradient-text-animated">Innovantes</span>
             </h2>
-            <p class="mt-4 max-w-2xl text-xl text-gray-300 mx-auto">
-                Designed for comfort, built for performance
+            <p class="mt-8 max-w-2xl text-xl text-gray-300 mx-auto">
+                Conçu pour votre confort, optimisé pour une performance sans faille.
             </p>
         </div>
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="feature-card bg-gray-900 rounded-xl p-8 transition-all duration-300 hover:border-orange-500 border border-gray-800">
-                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                    </svg>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+            <!-- Feature 1 -->
+            <div class="feature-card-hover glassmorphism rounded-xl p-8 transition-all duration-300 border border-transparent hover:border-orange-500/50 reveal" style="animation-delay: 0s">
+                <div class="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-orange-600/30 rounded-lg flex items-center justify-center mb-6 ring-2 ring-orange-500/30">
+                    <i class="fas fa-sliders-h text-3xl text-orange-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-3">Adjustable Temperature</h3>
-                <p class="text-gray-400">Fine-tune the color temperature from 6500K (daylight) to 1200K (candlelight) for perfect eye comfort at any time of day.</p>
+                <h3 class="text-2xl font-bold text-white mb-4">Température Ajustable</h3>
+                <p class="text-gray-300 text-md leading-relaxed">Ajustez finement la température de couleur de 6500K (jour) à 1200K (bougie) pour un confort oculaire parfait, à toute heure.</p>
             </div>
-            <div class="feature-card bg-gray-900 rounded-xl p-8 transition-all duration-300 hover:border-orange-500 border border-gray-800">
-                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                    </svg>
+            <!-- Feature 2 -->
+            <div class="feature-card-hover glassmorphism rounded-xl p-8 transition-all duration-300 border border-transparent hover:border-orange-500/50 reveal" style="animation-delay: 0.1s">
+                <div class="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-orange-600/30 rounded-lg flex items-center justify-center mb-6 ring-2 ring-orange-500/30">
+                    <i class="fas fa-clock text-3xl text-orange-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-3">Smart Scheduling</h3>
-                <p class="text-gray-400">Automatically adjusts based on sunset/sunrise or your custom schedule. Never worry about manually changing settings.</p>
+                <h3 class="text-2xl font-bold text-white mb-4">Planification Intelligente</h3>
+                <p class="text-gray-300 text-md leading-relaxed">S'adapte automatiquement au lever/coucher du soleil ou à votre emploi du temps personnalisé. Plus besoin de réglages manuels !</p>
             </div>
-            <div class="feature-card bg-gray-900 rounded-xl p-8 transition-all duration-300 hover:border-orange-500 border border-gray-800">
-                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
-                    </svg>
+            <!-- Feature 3 -->
+            <div class="feature-card-hover glassmorphism rounded-xl p-8 transition-all duration-300 border border-transparent hover:border-orange-500/50 reveal" style="animation-delay: 0.2s">
+                <div class="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-orange-600/30 rounded-lg flex items-center justify-center mb-6 ring-2 ring-orange-500/30">
+                    <i class="fas fa-layer-group text-3xl text-orange-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-3">Preset Modes</h3>
-                <p class="text-gray-400">Choose from specialized modes: Reading, Programming, Gaming, Movie Night - each optimized for specific activities.</p>
+                <h3 class="text-2xl font-bold text-white mb-4">Modes Prédéfinis</h3>
+                <p class="text-gray-300 text-md leading-relaxed">Choisissez parmi des modes spécialisés : Lecture, Code, Gaming, Cinéma - chacun optimisé pour des activités spécifiques.</p>
             </div>
-            <div class="feature-card bg-gray-900 rounded-xl p-8 transition-all duration-300 hover:border-orange-500 border border-gray-800">
-                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                    </svg>
+            <!-- Feature 4 -->
+            <div class="feature-card-hover glassmorphism rounded-xl p-8 transition-all duration-300 border border-transparent hover:border-orange-500/50 reveal" style="animation-delay: 0.3s">
+                <div class="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-orange-600/30 rounded-lg flex items-center justify-center mb-6 ring-2 ring-orange-500/30">
+                    <i class="fas fa-bolt text-3xl text-orange-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-3">Performance Mode</h3>
-                <p class="text-gray-400">When you need full color accuracy for creative work, temporarily disable with a hotkey or timer.</p>
+                <h3 class="text-2xl font-bold text-white mb-4">Mode Performance</h3>
+                <p class="text-gray-300 text-md leading-relaxed">Besoin d'une précision colorimétrique totale ? Désactivez temporairement le filtre via un raccourci ou une minuterie.</p>
             </div>
-            <div class="feature-card bg-gray-900 rounded-xl p-8 transition-all duration-300 hover:border-orange-500 border border-gray-800">
-                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0 3.35a1.724 1.724 0 001.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572-1.065c-.426-1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573 1.066c-1.543-.94-3.31.826-2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572-1.065c-.426-1.756-2.924-1.756-3.35 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
+            <!-- Feature 5 -->
+            <div class="feature-card-hover glassmorphism rounded-xl p-8 transition-all duration-300 border border-transparent hover:border-orange-500/50 reveal" style="animation-delay: 0.4s">
+                <div class="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-orange-600/30 rounded-lg flex items-center justify-center mb-6 ring-2 ring-orange-500/30">
+                    <i class="fas fa-cogs text-3xl text-orange-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-3">Advanced Customization</h3>
-                <p class="text-gray-400">Fine-grained control over intensity, gamma correction, and brightness preservation to match your exact preferences.</p>
+                <h3 class="text-2xl font-bold text-white mb-4">Personnalisation Avancée</h3>
+                <p class="text-gray-300 text-md leading-relaxed">Contrôle précis de l'intensité, correction gamma, et préservation de la luminosité pour correspondre à vos préférences exactes.</p>
             </div>
-            <div class="feature-card bg-gray-900 rounded-xl p-8 transition-all duration-300 hover:border-orange-500 border border-gray-800">
-                <div class="w-14 h-14 bg-orange-500/10 rounded-lg flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18V6m4 12a4 4 0 01-4 4H8a4 4 0 01-4-4V6a4 4 0 014-4h4a4 4 0 014 4v12z"></path>
-                    </svg>
+            <!-- Feature 6 -->
+            <div class="feature-card-hover glassmorphism rounded-xl p-8 transition-all duration-300 border border-transparent hover:border-orange-500/50 reveal" style="animation-delay: 0.5s">
+                <div class="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-orange-600/30 rounded-lg flex items-center justify-center mb-6 ring-2 ring-orange-500/30">
+                    <i class="fas fa-feather-alt text-3xl text-orange-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-3">Lightweight</h3>
-                <p class="text-gray-400">Uses minimal system resources (less than 1% CPU) so you can keep it running 24/7 without impacting performance.</p>
+                <h3 class="text-2xl font-bold text-white mb-4">Léger & Performant</h3>
+                <p class="text-gray-300 text-md leading-relaxed">Utilise un minimum de ressources système (<1% CPU). Laissez-le tourner 24/7 sans impacter les performances.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Benefits Section -->
-<section id="benefits" class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900">
-    <div class="max-w-7xl mx-auto">
-        <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
-            <div class="mb-12 lg:mb-0">
-                <h2 class="text-3xl font-extrabold text-white sm:text-4xl mb-6">
-                    Why Your Eyes Will <span class="gradient-text">Thank You</span>
+<!-- Section Bénéfices Statique -->
+<section id="benefices" class="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-var(--medium-bg) to-var(--dark-bg)">
+    <div class="max-w-screen-xl mx-auto">
+        <div class="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+            <div class="mb-12 lg:mb-0 reveal">
+                <h2 class="section-title text-white mb-10">
+                    Pourquoi Vos Yeux Vont <span class="gradient-text-animated">Adorer</span>
                 </h2>
-                <div class="space-y-6">
-                    <div class="flex">
+                <div class="space-y-8">
+                    <!-- Benefit 1 -->
+                    <div class="flex items-start">
                         <div class="flex-shrink-0">
-                            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-orange-500/10 text-orange-500">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                </svg>
+                            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/30 text-orange-400 ring-2 ring-orange-500/30">
+                                <i class="fas fa-eye text-2xl"></i>
                             </div>
                         </div>
-                        <div class="ml-4">
-                            <h3 class="text-lg font-medium text-white">Reduced Eye Strain</h3>
-                            <p class="mt-2 text-gray-300">
-                                Blue light from screens causes digital eye strain. FoxyBlueLight filters the most harmful wavelengths while maintaining visibility.
-                            </p>
+                        <div class="ml-5">
+                            <h3 class="text-xl font-semibold text-white">Réduction de la Fatigue Oculaire</h3>
+                            <p class="mt-2 text-gray-300 leading-relaxed">La lumière bleue des écrans fatigue vos yeux. FoxyBlueLight filtre les longueurs d'onde les plus nocives tout en préservant la clarté.</p>
                         </div>
                     </div>
-                    <div class="flex">
+                    <!-- Benefit 2 -->
+                    <div class="flex items-start">
                         <div class="flex-shrink-0">
-                            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-orange-500/10 text-orange-500">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                                </svg>
+                            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/30 text-orange-400 ring-2 ring-orange-500/30">
+                                <i class="fas fa-moon text-2xl"></i>
                             </div>
                         </div>
-                        <div class="ml-4">
-                            <h3 class="text-lg font-medium text-white">Better Sleep</h3>
-                            <p class="mt-2 text-gray-300">
-                                Blue light suppresses melatonin production. Our automatic nighttime mode helps maintain your natural sleep cycle.
-                            </p>
+                        <div class="ml-5">
+                            <h3 class="text-xl font-semibold text-white">Sommeil Amélioré</h3>
+                            <p class="mt-2 text-gray-300 leading-relaxed">La lumière bleue perturbe la production de mélatonine. Notre mode nuit automatique aide à maintenir votre cycle de sommeil naturel.</p>
                         </div>
                     </div>
-                    <div class="flex">
+                    <!-- Benefit 3 -->
+                    <div class="flex items-start">
                         <div class="flex-shrink-0">
-                            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-orange-500/10 text-orange-500">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                                </svg>
+                            <div class="flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/30 text-orange-400 ring-2 ring-orange-500/30">
+                                <i class="fas fa-heartbeat text-2xl"></i>
                             </div>
                         </div>
-                        <div class="ml-4">
-                            <h3 class="text-lg font-medium text-white">Long-Term Eye Health</h3>
-                            <p class="mt-2 text-gray-300">
-                                Chronic blue light exposure may contribute to retinal damage. Our scientifically-tuned filters help protect your vision over time.
-                            </p>
+                        <div class="ml-5">
+                            <h3 class="text-xl font-semibold text-white">Santé Oculaire Durable</h3>
+                            <p class="mt-2 text-gray-300 leading-relaxed">L'exposition chronique à la lumière bleue peut endommager la rétine. Nos filtres scientifiquement calibrés protègent votre vision à long terme.</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="relative">
-                <div class="relative w-full overflow-hidden rounded-xl">
-                    <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_5tkzkblw.json" background="transparent" speed="1" style="width: 100%; height: 400px;" loop autoplay></lottie-player>
+            <div class="relative mt-12 lg:mt-0 reveal" style="animation-delay: 0.2s;">
+                <div class="relative w-full overflow-hidden rounded-xl neon-glow-orange-soft">
+                    <lottie-player src="https://lottie.host/36ddf026-7cda-4782-8f46-08e8bc9ad446/6wmT1GvGI9.json" background="transparent" speed="1" style="width: 100%; height: auto; max-height: 450px;" loop autoplay></lottie-player>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- About Section -->
-<section id="about" class="py-20 px-4 sm:px-6 lg:px-8 bg-black">
-    <div class="max-w-7xl mx-auto">
-        <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
-            <div class="mb-12 lg:mb-0 order-last lg:order-first">
-                <div class="relative">
-                    <div class="absolute -top-8 -left-8 w-32 h-32 bg-orange-500/20 rounded-full"></div>
-                    <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-orange-500/20 rounded-full"></div>
-                    <img src="https://avatars.githubusercontent.com/u/118616410?v=4" alt="Fox" class="relative rounded-full w-64 h-64 mx-auto object-cover border-4 border-orange-500/30">
+<!-- À Propos - Moderne et Personnel -->
+<section id="a-propos" class="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-var(--dark-bg)">
+    <div class="max-w-screen-xl mx-auto">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
+            <div class="lg:col-span-5 mb-12 lg:mb-0 reveal">
+                <div class="relative group">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-orange-600 to-amber-500 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                    <img src="https://avatars.githubusercontent.com/u/118616410?v=4" alt="Fox, le créateur" class="relative rounded-full w-64 h-64 md:w-80 md:h-80 mx-auto object-cover border-4 border-gray-700 shadow-2xl">
                 </div>
             </div>
-            <div class="lg:pl-12">
-                <h2 class="text-3xl font-extrabold text-white sm:text-4xl mb-6">
-                    Meet <span class="gradient-text">Fox</span>, The Creator
+            <div class="lg:col-span-7 lg:pl-12 reveal" style="animation-delay: 0.2s;">
+                <h2 class="section-title text-white mb-10">
+                    Derrière <span class="gradient-text-animated">FoxyBlueLight</span>
                 </h2>
-                <p class="text-lg text-gray-300 mb-6">
-                    Hey there! I'm Fox, a passionate developer who spends way too much time in front of screens. After experiencing eye strain and sleep issues myself, I created FoxyBlueLight to solve these problems with a solution that's both effective and elegant.
+                <p class="text-xl text-gray-300 mb-6 leading-relaxed">
+                    Salut ! Moi c'est Fox, développeur passionné et (un peu trop) grand consommateur d'écrans. Fatigué par la fatigue oculaire et les soucis de sommeil, j'ai créé FoxyBlueLight pour apporter une solution à la fois élégante et réellement efficace.
                 </p>
-                <p class="text-lg text-gray-300 mb-8">
-                    My goal was to build something that actually works - not just another blue light filter that turns your screen orange without proper scientific backing. Every feature in FoxyBlueLight is designed with real-world usability in mind.
+                <p class="text-xl text-gray-300 mb-10 leading-relaxed">
+                    Mon but : concevoir un outil qui fonctionne VRAIMENT, pas un énième filtre qui se contente de rendre l'écran orange. Chaque fonctionnalité est pensée pour une utilisation intuitive et un impact positif sur votre quotidien.
                 </p>
-                <div class="flex space-x-4">
-                    <a href="https://github.com/Tiger-Foxx" class="inline-flex items-center justify-center px-5 py-3 border border-gray-700 text-base font-medium rounded-md text-white bg-gray-800 hover:bg-gray-700">
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.293 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path>
-                        </svg>
+                <div class="flex space-x-6">
+                    <a href="https://github.com/Tiger-Foxx" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 border-2 border-gray-600 text-base font-semibold rounded-lg text-gray-300 bg-gray-800/50 hover:bg-gray-700/70 hover:text-orange-400 hover:border-orange-500 transition-all duration-300 group">
+                        <i class="fab fa-github text-xl mr-3 group-hover:scale-110 transition-transform"></i>
                         GitHub
                     </a>
-                    <a href="https://the-fox.tech" class="inline-flex items-center justify-center px-5 py-3 border border-gray-700 text-base font-medium rounded-md text-white bg-gray-800 hover:bg-gray-700">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                        </svg>
-                        Website
+                    <a href="https://the-fox.tech" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 border-2 border-gray-600 text-base font-semibold rounded-lg text-gray-300 bg-gray-800/50 hover:bg-gray-700/70 hover:text-orange-400 hover:border-orange-500 transition-all duration-300 group">
+                        <i class="fas fa-globe text-xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        Site Web
                     </a>
                 </div>
             </div>
@@ -409,201 +503,248 @@
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-orange-900/30 via-black to-orange-900/30">
-    <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-3xl font-extrabold text-white sm:text-4xl mb-6">
-            Ready to <span class="gradient-text">Protect Your Eyes</span>?
+<!-- CTA Final - Incitation Forte -->
+<section class="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-var(--primary-orange) via-var(--secondary-orange) to-var(--primary-orange)">
+    <div class="max-w-3xl mx-auto text-center reveal">
+        <h2 class="text-4xl md:text-5xl font-black text-white mb-6">
+            Prêt à Offrir une Pause à Vos Yeux ?
         </h2>
-        <p class="text-xl text-gray-300 mb-8">
-            Join thousands of users who've reduced eye strain and improved sleep with FoxyBlueLight.
+        <p class="text-xl text-gray-100 mb-12">
+            Découvrez une nouvelle ère de confort numérique. FoxyBlueLight est gratuit et simple à utiliser.
         </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="https://github.com/Tiger-Foxx/BlueLightFox/releases/download/health/Foxy_Light_Setup.exe" class="download-btn inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 md:py-4 md:text-lg md:px-10">
-                Download Free
-                <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                </svg>
+        <div class="flex flex-col sm:flex-row justify-center gap-6">
+            <a href="https://github.com/Tiger-Foxx/BlueLightFox/releases/download/health/Foxy_Light_Setup.exe" 
+               class="inline-flex items-center justify-center px-10 py-4 border-2 border-white text-lg font-bold rounded-xl text-white bg-black/20 hover:bg-black/40 backdrop-blur-sm shadow-xl transform hover:scale-105 transition-all duration-300">
+                <i class="fas fa-download mr-3"></i>
+                Télécharger Gratuitement
             </a>
-            <a href="https://github.com/Tiger-Foxx/BlueLightFox" class="inline-flex items-center justify-center px-8 py-4 border border-gray-700 text-base font-medium rounded-md text-white bg-gray-800 hover:bg-gray-700 md:py-4 md:text-lg md:px-10">
-                View on GitHub
-                <svg class="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.293 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path>
-                </svg>
+            <a href="https://github.com/Tiger-Foxx/BlueLightFox" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center justify-center px-10 py-4 border-2 border-white/50 text-lg font-bold rounded-xl text-white bg-transparent hover:bg-white/10 backdrop-blur-sm shadow-xl transform hover:scale-105 transition-all duration-300">
+                <i class="fab fa-github mr-3"></i>
+                Voir sur GitHub
             </a>
         </div>
     </div>
 </section>
 
-<!-- Contact Section -->
-<section id="contact" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900">
-    <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
-                Get In <span class="gradient-text">Touch</span>
+<!-- Contact - Statique -->
+<section id="contact" class="py-20 md:py-32 px-4 sm:px-6 lg:px-8 bg-var(--dark-bg) bg-pattern">
+    <div class="max-w-screen-lg mx-auto">
+        <div class="text-center mb-16 reveal">
+            <h2 class="section-title text-white">
+                Une Question ? Un <span class="gradient-text-animated">Message</span> ?
             </h2>
-            <p class="mt-4 max-w-2xl text-xl text-gray-300 mx-auto">
-                Have questions or feedback? I'd love to hear from you!
+            <p class="mt-8 max-w-2xl text-xl text-gray-300 mx-auto">
+                N'hésitez pas à me contacter. Vos retours sont précieux !
             </p>
         </div>
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-gray-800 rounded-xl p-8 text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-md bg-orange-500/10 text-orange-500 mb-4">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                    </svg>
+            <!-- Contact 1: Email -->
+            <a href="mailto:donfackarthur750@gmail.com" target="_blank" rel="noopener noreferrer" class="contact-card-link glassmorphism rounded-xl p-8 text-center transition-all duration-300 reveal" style="animation-delay: 0s">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/30 text-orange-400 mb-6 ring-2 ring-orange-500/30">
+                    <i class="fas fa-envelope text-3xl"></i>
                 </div>
-                <h3 class="text-lg font-medium text-white mb-2">Email</h3>
-                <p class="text-orange-400 font-mono">donfackarthur750@gmail.com</p>
-            </div>
-            <div class="bg-gray-800 rounded-xl p-8 text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-md bg-orange-500/10 text-orange-500 mb-4">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                    </svg>
+                <h3 class="text-xl font-semibold text-white mb-2">Email</h3>
+                <p class="text-orange-400 font-mono text-sm md:text-base break-all">donfackarthur750@gmail.com</p>
+            </a>
+            <!-- Contact 2: WhatsApp -->
+            <a href="https://wa.me/237658866639" target="_blank" rel="noopener noreferrer" class="contact-card-link glassmorphism rounded-xl p-8 text-center transition-all duration-300 reveal" style="animation-delay: 0.1s">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/30 text-orange-400 mb-6 ring-2 ring-orange-500/30">
+                    <i class="fab fa-whatsapp text-3xl"></i>
                 </div>
-                <h3 class="text-lg font-medium text-white mb-2">WhatsApp</h3>
-                <p class="text-orange-400 font-mono">+237 658 866 639</p>
-            </div>
-            <div class="bg-gray-800 rounded-xl p-8 text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-md bg-orange-500/10 text-orange-500 mb-4">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                    </svg>
+                <h3 class="text-xl font-semibold text-white mb-2">WhatsApp</h3>
+                <p class="text-orange-400 font-mono text-sm md:text-base break-all">+237 658 866 639</p>
+            </a>
+            <!-- Contact 3: Site Web -->
+            <a href="https://the-fox.tech" target="_blank" rel="noopener noreferrer" class="contact-card-link glassmorphism rounded-xl p-8 text-center transition-all duration-300 reveal" style="animation-delay: 0.2s">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-orange-500/20 to-orange-600/30 text-orange-400 mb-6 ring-2 ring-orange-500/30">
+                    <i class="fas fa-globe text-3xl"></i>
                 </div>
-                <h3 class="text-lg font-medium text-white mb-2">Website</h3>
-                <p class="text-orange-400 font-mono">the-fox.tech</p>
-            </div>
+                <h3 class="text-xl font-semibold text-white mb-2">Site Web</h3>
+                <p class="text-orange-400 font-mono text-sm md:text-base break-all">the-fox.tech</p>
+            </a>
         </div>
     </div>
 </section>
 
-<!-- Footer -->
-<footer class="bg-black py-12 px-4 sm:px-6 lg:px-8 border-t border-gray-800">
-    <div class="max-w-7xl mx-auto">
+<!-- Footer Amélioré Statique -->
+<footer class="bg-black py-12 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50">
+    <div class="max-w-screen-xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center mb-6 md:mb-0">
-                <img src="https://github.com/Tiger-Foxx/BlueLightFox/raw/main/FoxyBlueLight/Resources/logo.png" alt="FoxyBlueLight Logo" class="h-8 w-auto">
-                <span class="ml-2 text-white font-bold text-lg">Foxy<span class="gradient-text">BlueLight</span></span>
+                <img src="https://github.com/Tiger-Foxx/BlueLightFox/raw/main/FoxyBlueLight/Resources/logo.png" alt="Logo FoxyBlueLight" class="h-9 w-auto">
+                <span class="ml-3 text-white font-bold text-xl">Foxy<span class="gradient-text-animated">BlueLight</span></span>
             </div>
             <div class="flex space-x-6">
-                <a href="https://github.com/Tiger-Foxx/BlueLightFox" class="text-gray-400 hover:text-orange-400">
+                <!-- Link 1: GitHub -->
+                <a href="https://github.com/Tiger-Foxx/BlueLightFox" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-orange-400 transition-colors duration-300">
                     <span class="sr-only">GitHub</span>
-                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.09.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.293 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path>
-                    </svg>
+                    <i class="fab fa-github text-2xl"></i>
                 </a>
-                <a href="https://the-fox.tech" class="text-gray-400 hover:text-orange-400">
+                <!-- Link 2: Website -->
+                <a href="https://the-fox.tech" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-orange-400 transition-colors duration-300">
                     <span class="sr-only">Website</span>
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                    </svg>
+                    <i class="fas fa-globe text-2xl"></i>
                 </a>
-                <a href="mailto:donfackarthur750@gmail.com" class="text-gray-400 hover:text-orange-400">
+                <!-- Link 3: Email -->
+                <a href="mailto:donfackarthur750@gmail.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-orange-400 transition-colors duration-300">
                     <span class="sr-only">Email</span>
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                    </svg>
+                    <i class="fas fa-envelope text-2xl"></i>
                 </a>
             </div>
         </div>
-        <div class="mt-8 border-t border-gray-800 pt-8 md:flex md:items-center md:justify-between">
+        <div class="mt-8 border-t border-gray-800/50 pt-8 md:flex md:items-center md:justify-between">
             <p class="text-gray-400 text-sm text-center md:text-left">
-                &copy; 2023 FoxyBlueLight. All rights reserved. Crafted with ❤️ by Fox.
+                © <span id="currentYear"></span> FoxyBlueLight. Tous droits réservés. Conçu avec <i class="fas fa-heart text-orange-500"></i> par Fox.
             </p>
             <div class="mt-4 md:mt-0 flex justify-center md:justify-end space-x-6">
-                <a href="#" class="text-gray-400 hover:text-orange-400 text-sm">Privacy</a>
-                <a href="#" class="text-gray-400 hover:text-orange-400 text-sm">Terms</a>
-                <a href="#" class="text-gray-400 hover:text-orange-400 text-sm">FAQ</a>
+                <a href="#" class="text-gray-400 hover:text-orange-400 text-sm transition-colors">Confidentialité</a>
+                <a href="#" class="text-gray-400 hover:text-orange-400 text-sm transition-colors">Termes</a>
+                <a href="#" class="text-gray-400 hover:text-orange-400 text-sm transition-colors">FAQ</a>
             </div>
         </div>
     </div>
 </footer>
 
 <script>
-    // Simple slider functionality for before/after comparison
-    const slider = document.querySelector('.before-after');
-    const handle = document.querySelector('.slider-handle');
-    const beforeAfter = document.querySelector('.before-after img:last-child');
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-    if (slider && handle && beforeAfter) {
-        let isDragging = false;
-
-        handle.addEventListener('mousedown', () => {
-            isDragging = true;
-            document.body.style.cursor = 'ew-resize';
+    // Menu Mobile
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuButton.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            }
         });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-
-            const rect = slider.getBoundingClientRect();
-            let x = e.clientX - rect.left;
-            x = Math.max(0, Math.min(x, rect.width));
-
-            const percent = (x / rect.width) * 100;
-            beforeAfter.style.width = `${percent}%`;
-            handle.style.left = `${percent}%`;
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-            document.body.style.cursor = '';
-        });
-
-        // Touch support
-        handle.addEventListener('touchstart', () => {
-            isDragging = true;
-        });
-
-        document.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-
-            const touch = e.touches[0];
-            const rect = slider.getBoundingClientRect();
-            let x = touch.clientX - rect.left;
-            x = Math.max(0, Math.min(x, rect.width));
-
-            const percent = (x / rect.width) * 100;
-            beforeAfter.style.width = `${percent}%`;
-            handle.style.left = `${percent}%`;
-        });
-
-        document.addEventListener('touchend', () => {
-            isDragging = false;
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.querySelector('i').classList.remove('fa-times');
+                mobileMenuButton.querySelector('i').classList.add('fa-bars');
+            });
         });
     }
 
-    // Smooth scrolling for anchor links
+    // Slider de comparaison Avant/Après
+    const sliderContainer = document.querySelector('.comparison-slider');
+    if (sliderContainer) {
+        const sliderLine = sliderContainer.querySelector('.slider-line');
+        const sliderHandle = sliderContainer.querySelector('.slider-handle'); // Get handle
+        const imgAfterContainer = sliderContainer.querySelector('.img-after');
+        let isDragging = false;
+
+        // Set initial position of handle based on line
+        sliderHandle.style.left = sliderLine.style.left;
+
+
+        const moveSlider = (clientX) => {
+            const rect = sliderContainer.getBoundingClientRect();
+            let x = clientX - rect.left;
+            x = Math.max(0, Math.min(x, rect.width));
+            const percent = (x / rect.width) * 100;
+            imgAfterContainer.style.width = `${percent}%`;
+            sliderLine.style.left = `${percent}%`;
+            sliderHandle.style.left = `${percent}%`; // Move handle with line
+        };
+
+        const startDrag = (e) => {
+            isDragging = true;
+            sliderContainer.style.cursor = 'ew-resize';
+            document.body.style.userSelect = 'none'; // Prevent text selection globally
+            e.preventDefault();
+        }
+
+        const stopDrag = () => {
+            if (isDragging) {
+                isDragging = false;
+                sliderContainer.style.cursor = 'default';
+                document.body.style.userSelect = '';
+            }
+        }
+        
+        const drag = (e) => {
+            if (!isDragging) return;
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            if (clientX === undefined) return;
+            moveSlider(clientX);
+        }
+
+        sliderLine.addEventListener('mousedown', startDrag);
+        sliderHandle.addEventListener('mousedown', startDrag); // Allow dragging handle too
+        sliderLine.addEventListener('touchstart', startDrag, { passive: false });
+        sliderHandle.addEventListener('touchstart', startDrag, { passive: false });
+
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchend', stopDrag);
+    }
+
+    // Smooth scrolling
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-
+            const href = this.getAttribute('href');
+            if (href === "#" || href === "") return;
+            const targetElement = document.querySelector(href);
             if (targetElement) {
-                targetElement.scrollIntoView({
+                e.preventDefault();
+                const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset - 80; // 80px for nav height
+                window.scrollTo({
+                    top: offsetTop,
                     behavior: 'smooth'
                 });
             }
         });
     });
 
-    // Add scroll animation class when elements come into view
+    // Intersection Observer for reveal animations
+    const revealElements = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('animate-fadeIn');
+                entry.target.classList.add('is-visible');
+                // observer.unobserve(entry.target); // Keep observing if you want re-animation on scroll up/down
+            } else {
+                // entry.target.classList.remove('is-visible'); // Optional: remove if you want re-animation
             }
         });
     }, {
         threshold: 0.1
     });
-
-    document.querySelectorAll('.feature-card, .before-after, .floating').forEach(el => {
+    revealElements.forEach(el => {
         observer.observe(el);
     });
+
+    // Tilt animation for cards
+    const tiltElements = document.querySelectorAll('.feature-card-hover, .contact-card-link');
+    tiltElements.forEach(el => {
+        el.addEventListener('mousemove', (e) => {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const { width, height } = rect;
+            const rotateX = (y / height - 0.5) * -10; // Reduced rotation
+            const rotateY = (x / width - 0.5) * 10;  // Reduced rotation
+            // Ensure translateY is consistent with CSS hover if any, or manage solely via JS
+            el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03) translateY(-5px)`;
+            el.style.boxShadow = `0 20px 40px rgba(255, 87, 34, 0.2), 0 0 15px rgba(255, 87, 34, 0.1)`; // Add dynamic shadow
+        });
+        el.addEventListener('mouseleave', () => {
+            el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1) translateY(0)';
+            el.style.boxShadow = ''; // Reset shadow or to initial state
+        });
+    });
+
 </script>
 <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
